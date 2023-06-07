@@ -1,0 +1,9 @@
+Codebade/models/Bert_model/bert_en_uncased_L-12_H-768_A-12_4/keras_metadata.pb
+*.pb
+*.index
+models
+checkpoint
+vocab.txt
+*weight*
+variables*
+*.pyc

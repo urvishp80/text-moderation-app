@@ -5,7 +5,10 @@ else:
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_text as text
-from Utils import preprocess_text
+if __name__ == "__main__":
+    from Utils import preprocess_text
+else:    
+    from .Utils import preprocess_text
 
 class spamDetection(Model):
     def __init__(self,BERT_processor,BERT_transformer,modelWeighPath,thresh) -> None:
@@ -64,7 +67,7 @@ class spamDetection(Model):
 
 if __name__ == "__main__":
     # Spam Model weight Path
-    spam_Model_weight_Path = r'spam_weight_model'
+    spam_Model_weight_Path = r'A:\CJ_Work\Text-Moderation\text-moderation-app\weights\spam model weights\spam weight'
     #Spam Model Threshhold
     Spam_thresh = 0.5
     #Spam Mode Path

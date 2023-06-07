@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     from Utils import preprocess_text
 else:    
-    from Utils import preprocess_text
+    from .Utils import preprocess_text
 
 
 from pathlib import Path
