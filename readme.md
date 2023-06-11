@@ -1,25 +1,39 @@
-# CV based Profile Moderation
+# Text Moderation App
 
 ## Project Setup:
 1. Clone Repository
-2. Download the BERT Model and model weight from this link -> https://drive.google.com/drive/folders/1OtgUWcQxecRx-fJr2BefIjywVuV9othy?usp=drive_link
-3. Moev the folders inside the main directory (where app.py file is located) 
-4. Install Requirement using following command (pip install -r requirements.txt)
-5. update the BERT Model and model weights paths in config file as per requirements.
-6. Run the app.py will create a local server at 127.0.0.0:8000
-7. send request on 127.0.0.0:8000/index
-    GET Request:
-      parameter: text: (input text for moderation detection)
-      i.e 127.0.0.0:8000/index?text="input text"
-    POST Request:
-      parameter:
-        UserId : defaule 12121 (you can update from config file)
-        token  : default abc123abc123abc (you can update from config file)
-        text   :'input Text'
+2. Download the BERT Model and Model Weights from [here](https://drive.google.com/drive/folders/1OtgUWcQxecRx-fJr2BefIjywVuV9othy?usp=drive_link)
+3. Paste both the folders (i.e., models, weights) in the root directory.
+4. Install the dependencies using following command:  
+   `pip install -r requirements.txt`
+5. Run the with `python app.py`
+6. Send the request on `http://127.0.0.1:5000/index` 
+   1. GET Request:  
+        :param text: input text for moderation detection
+        i.e., `http://127.0.0.1:5000/index?text="your input text"`
 
-        i.e Post request with body json {
-          'UserID': 12121,
-          'token' : 'abc123abc123abc',
-          'text'  : 'Input Text'
-        }
-        please set content-type : application/json in request header
+   2. POST Request: with JSON body  
+         :param **userID**: default '12121' - can be configured from `config.py` file  
+         :param **token**: default 'abc123abc123abc' - can be configured from `config.py` file  
+         :param **text**: 'your input text'  
+   - Set the key `Content-Type` : `application/json` in request Headers
+   ```
+   {
+       "userID": "12121",
+       "token" : "abc123abc123abc",
+       "text"  : "Let's go on a dinner date. My friend owns a sea-facing restaurant."
+   }
+   ```
+7. You should receive a successful response such as:  
+   ```
+   {
+       "StatusCode": 200, 
+       "Response": {
+           "Spam_moderation_Require": spam_req,
+           "Spam_moderation_score": str(spam_score),
+           "Profane_moderation_require": profane_req,
+           "Profane_moderation_score": str(profane_score)
+           }
+   }
+    ```
+   

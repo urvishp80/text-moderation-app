@@ -1,0 +1,77 @@
+{
+	"info": {
+		"_postman_id": "e1bb5162-9973-4e6f-bf6c-b3884485739a",
+		"name": "Text-Moderation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20226475",
+		"_collection_link": "https://speeding-flare-482049.postman.co/workspace/Andrew~8054721a-1f1c-429c-8af1-77542b84dd48/collection/20226475-e1bb5162-9973-4e6f-bf6c-b3884485739a?action=share&creator=20226475&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:5000/index?text=\"Let's go on a dinner date. My friend owns a sea-facing restaurant.\"",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"index"
+					],
+					"query": [
+						{
+							"key": "text",
+							"value": "\"Let's go on a dinner date. My friend owns a sea-facing restaurant.\""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userID\": \"12121\",\r\n    \"token\" : \"abc123abc123abc\",\r\n    \"text\"  : \"Let's go on a dinner date. My friend owns a sea-facing restaurant.\"\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/index",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"index"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
