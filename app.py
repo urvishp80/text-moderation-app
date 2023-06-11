@@ -182,41 +182,41 @@ class TextModeration_preload(Resource):
 
 if __name__ == "__main__":
     # Model Load EveryTime
-    parent_path = Path(__file__).parent.absolute()
-    bert_parent_path = parent_path.joinpath(cf.BERT_MODEL_PARENT)
-    myapp = Flask("Text Moderation")
-    api = Api(myapp)
-    arguments = {
-        "BERT_processor": str(bert_parent_path.joinpath(cf.BERT_PROCESSOR)),
-        "BERT_transformer": str(bert_parent_path.joinpath(cf.BERT_TRANSFORMER)),
-        "Profane_modelWeightPath": cf.PROFANE_MODEL_WEIGHT_PATH,
-        "profane_thresh": cf.PROFANE_THRESHOLD,
-        "spam_model_weightPath": cf.SPAM_MODEL_WEIGHT_PATH,
-        "spam_thresh": cf.SPAM_THRESHOLD
-    }
-    api.add_resource(TextModeration, "/index", resource_class_args=arguments.values())
-    myapp.run()
-
-    # Model Load in main (not load every request)
     # parent_path = Path(__file__).parent.absolute()
     # bert_parent_path = parent_path.joinpath(cf.BERT_MODEL_PARENT)
-    # arguments = {
-    #     "BERT_processor":str(bert_parent_path.joinpath(cf.BERT_PROCESSOR)),
-    #     "BERT_transformer":str(bert_parent_path.joinpath(cf.BERT_TRANSFORMER)), 
-    #     "Profane_modelWeightPath":cf.PROFANE_MODEL_WEIGHT_PATH,
-    #     "profane_thresh":cf.PROFANE_THRESHOLD,
-    #     "spam_model_weightPath":cf.SPAM_MODEL_WEIGHT_PATH,
-    #     "spam_thresh":cf.SPAM_THRESHOLD
-    #     }
-    # PD_model = profane_detection(arguments["BERT_processor"],
-    #                           arguments["BERT_transformer"],
-    #                           arguments["Profane_modelWeightPath"],
-    #                           arguments["profane_thresh"])
-    # SD_model = spamDetection(arguments["BERT_processor"],
-    #                           arguments["BERT_transformer"],
-    #                           arguments["spam_model_weightPath"],
-    #                           arguments["spam_thresh"])    
     # myapp = Flask("Text Moderation")
     # api = Api(myapp)
-    # api.add_resource(TextModeration_preload,"/index",resource_class_args = [PD_model,SD_model])
+    # arguments = {
+    #     "BERT_processor": str(bert_parent_path.joinpath(cf.BERT_PROCESSOR)),
+    #     "BERT_transformer": str(bert_parent_path.joinpath(cf.BERT_TRANSFORMER)),
+    #     "Profane_modelWeightPath": cf.PROFANE_MODEL_WEIGHT_PATH,
+    #     "profane_thresh": cf.PROFANE_THRESHOLD,
+    #     "spam_model_weightPath": cf.SPAM_MODEL_WEIGHT_PATH,
+    #     "spam_thresh": cf.SPAM_THRESHOLD
+    # }
+    # api.add_resource(TextModeration, "/index", resource_class_args=arguments.values())
     # myapp.run()
+
+    # Model Load in main (not load every request)
+    parent_path = Path(__file__).parent.absolute()
+    bert_parent_path = parent_path.joinpath(cf.BERT_MODEL_PARENT)
+    arguments = {
+        "BERT_processor":str(bert_parent_path.joinpath(cf.BERT_PROCESSOR)),
+        "BERT_transformer":str(bert_parent_path.joinpath(cf.BERT_TRANSFORMER)), 
+        "Profane_modelWeightPath":cf.PROFANE_MODEL_WEIGHT_PATH,
+        "profane_thresh":cf.PROFANE_THRESHOLD,
+        "spam_model_weightPath":cf.SPAM_MODEL_WEIGHT_PATH,
+        "spam_thresh":cf.SPAM_THRESHOLD
+        }
+    PD_model = profane_detection(arguments["BERT_processor"],
+                              arguments["BERT_transformer"],
+                              arguments["Profane_modelWeightPath"],
+                              arguments["profane_thresh"])
+    SD_model = spamDetection(arguments["BERT_processor"],
+                              arguments["BERT_transformer"],
+                              arguments["spam_model_weightPath"],
+                              arguments["spam_thresh"])    
+    myapp = Flask("Text Moderation")
+    api = Api(myapp)
+    api.add_resource(TextModeration_preload,"/index",resource_class_args = [PD_model,SD_model])
+    myapp.run()

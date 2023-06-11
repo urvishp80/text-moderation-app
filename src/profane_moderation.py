@@ -7,6 +7,7 @@ from pathlib import Path
 from abc import abstractmethod, ABC
 import tensorflow as tf
 import tensorflow_hub as hub
+import tensorflow_text as text
 from loguru import logger
 # import tensorflow_text as text
 

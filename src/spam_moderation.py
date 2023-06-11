@@ -4,7 +4,7 @@ else:
     from .profane_moderation import Model
 import tensorflow as tf
 import tensorflow_hub as hub
-# import tensorflow_text as text
+import tensorflow_text as text
 
 if __name__ == "__main__":
     from utils import preprocess_text
