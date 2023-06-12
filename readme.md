@@ -2,7 +2,7 @@
 
 ## Project Setup:
 1. Clone Repository
-2. Download the BERT Model and Model Weights from [here](https://drive.google.com/drive/folders/1OtgUWcQxecRx-fJr2BefIjywVuV9othy?usp=drive_link)
+2. Download the BERT Model and Model Weights from [here](https://drive.google.com/drive/folders/1OVEfcoXmlFneIL1ha-7b4c47t2bdGnZB?usp=sharing)
 3. Paste both the folders (i.e., models, weights) in the root directory.
 4. Install the dependencies using following command:  
    `pip install -r requirements.txt`
