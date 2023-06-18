@@ -1,5 +1,6 @@
 from src.profane_moderation import profane_detection
 from src.spam_moderation import spamDetection
+from src.utils import preprocess_text
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 import config as cf
@@ -152,22 +153,31 @@ class TextModeration_preload(Resource):
         if userID == cf.USERID and token == cf.TOKEN:
 
             if len(text) > cf.MINIMUM_LENGTH:
+                
+                logger.info(f"Preprocessing Input text ... ")
+                prepOutPut = preprocess_text(text)
+                if prepOutPut['StatusCode'] == 200:
+                    logger.info(f"Running Profanity Moderation ... ")
+                    profane_score, profane_req = self.PD.isModerationRequire(prepOutPut['Text'])
 
-                logger.info(f"Running Profanity Moderation ... ")
-                profane_score, profane_req = self.PD.isModerationRequire(text)
+                    logger.info(f"Running Spam Moderation ... ")
+                    spam_score, spam_req = self.SD.isModerationRequire(prepOutPut['Text'])
 
-                logger.info(f"Running Spam Moderation ... ")
-                spam_score, spam_req = self.SD.isModerationRequire(text)
-
-                return {
-                    "StatusCode": 200,
-                    "Response": {
-                        "Spam_moderation_Require": spam_req,
-                        "Spam_moderation_score": str(spam_score),
-                        "Profane_moderation_require": profane_req,
-                        "Profane_moderation_score": str(profane_score)
+                    return {
+                        "StatusCode": 200,
+                        "Response": {
+                            "Spam_moderation_Require": spam_req,
+                            "Spam_moderation_score": str(spam_score),
+                            "Profane_moderation_require": profane_req,
+                            "Profane_moderation_score": str(profane_score)
+                        }
                     }
+                else:
+                    return {
+                    "StatusCode": 200,
+                    "Response": "Invalid Text!!"
                 }
+
             else:
                 return {
                     "StatusCode": 200,

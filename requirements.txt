@@ -9,3 +9,6 @@ tensorflow_text==2.10.0
 flask==2.3.2
 flask-restful==0.3.9
 loguru==0.6.0
+transformers==4.30.2
+accelerate==0.20.3
+
