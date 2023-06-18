@@ -1,5 +1,5 @@
 # Bert Model Parent Path name
-BERT_MODEL_PARENT = "Models/Bert_model"
+BERT_MODEL_PARENT = "models/Bert_model"
 BERT_PROCESSOR = "Preprocessor"
 BERT_TRANSFORMER = "bert_en_uncased_L-12_H-768_A-12_4"
 
@@ -10,7 +10,7 @@ PROFANE_MODEL_WEIGHT_PATH = r"weights/profane_model_weight/profane_model_weight"
 PROFANE_THRESHOLD = float(0.5)
 
 # Spam Mode Path
-SPAM_MODEL_WEIGHT_PATH = r"weights/spam model weights/spam weight"
+SPAM_MODEL_WEIGHT_PATH = r"weights/spam_model_weight/spam_weight"
 
 # Spam Model Threshold
 SPAM_THRESHOLD = float(0.5)
