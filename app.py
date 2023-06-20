@@ -7,24 +7,21 @@ import config as cf
 from pathlib import Path
 from loguru import logger
 
-
 class TextModeration(Resource):
 
     def __init__(
             self,
-            BERT_Processor,
-            BERT_Transformer,
+            BERT_Tokenizer,
+            BERT_preTrainedModel,
             Profane_modelWeightPath: str,
-            profane_thresh: float,
             spam_model_weightPath,
-            spam_thresh,
             preloadModel: bool = False
     ) -> None:
 
         super().__init__()
 
-        self.PD = profane_detection(BERT_Processor, BERT_Transformer, Profane_modelWeightPath, profane_thresh)
-        self.SD = spamDetection(BERT_Processor, BERT_Transformer, spam_model_weightPath, spam_thresh)
+        self.PD = profane_detection(BERT_Tokenizer, Profane_modelWeightPath,BERT_preTrainedModel)
+        self.SD = spamDetection(BERT_Tokenizer, spam_model_weightPath, BERT_preTrainedModel)
 
         if preloadModel:
             self.PD.load_model()
@@ -209,23 +206,18 @@ if __name__ == "__main__":
 
     # Model Load in main (not load every request)
     parent_path = Path(__file__).parent.absolute()
-    bert_parent_path = parent_path.joinpath(cf.BERT_MODEL_PARENT)
     arguments = {
-        "BERT_processor":str(bert_parent_path.joinpath(cf.BERT_PROCESSOR)),
-        "BERT_transformer":str(bert_parent_path.joinpath(cf.BERT_TRANSFORMER)), 
-        "Profane_modelWeightPath":cf.PROFANE_MODEL_WEIGHT_PATH,
-        "profane_thresh":cf.PROFANE_THRESHOLD,
-        "spam_model_weightPath":cf.SPAM_MODEL_WEIGHT_PATH,
-        "spam_thresh":cf.SPAM_THRESHOLD
+        "BERT_Tokenizer":str(parent_path.joinpath(cf.BERT_TOKENIZER_PATH)),
+        "BERT_preTrainedModel":str(parent_path.joinpath(cf.BERT_MODEL_PARENT)), 
+        "Profane_modelWeightPath":str(parent_path.joinpath(cf.PROFANE_MODEL_WEIGHT_PATH)),
+        "spam_model_weightPath":str(parent_path.joinpath(cf.SPAM_MODEL_WEIGHT_PATH))
         }
-    PD_model = profane_detection(arguments["BERT_processor"],
-                              arguments["BERT_transformer"],
+    PD_model = profane_detection(arguments["BERT_Tokenizer"],
                               arguments["Profane_modelWeightPath"],
-                              arguments["profane_thresh"])
-    SD_model = spamDetection(arguments["BERT_processor"],
-                              arguments["BERT_transformer"],
+                              arguments["BERT_preTrainedModel"])
+    SD_model = spamDetection(arguments["BERT_Tokenizer"],
                               arguments["spam_model_weightPath"],
-                              arguments["spam_thresh"])    
+                              arguments["BERT_preTrainedModel"])    
     myapp = Flask("Text Moderation")
     api = Api(myapp)
     api.add_resource(TextModeration_preload,"/index",resource_class_args = [PD_model,SD_model])

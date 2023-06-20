@@ -8,18 +8,21 @@ from abc import abstractmethod, ABC
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_text as text
+from transformers import BertTokenizer,TFBertForSequenceClassification
 from loguru import logger
+import numpy as np
 # import tensorflow_text as text
 
 
 class Model(ABC):
-    def __init__(self, modelWeightPath) -> None:
+    def __init__(self, modelWeightPath, TokenizerPath) -> None:
         self.modelWeightPath = modelWeightPath
         self.model = None
         self.isModelLoad = False
+        self.tokenizer = BertTokenizer.from_pretrained(TokenizerPath)
 
     @abstractmethod
-    def create_model(self):
+    def create_model(self, preTrained_ModelPath: str):
         raise NotImplementedError
 
     def load_model(self):
@@ -37,42 +40,40 @@ class Model(ABC):
             if not self.isModelLoad:
                 self.load_model()
             text = preprocess_text(input)
-            pred = self.model.predict([text["Text"]])
+            encoding = self.tokenizer.encode_plus(
+            text['Text'],
+            add_special_tokens=True,
+            max_length=100,
+            return_token_type_ids=False,
+            pad_to_max_length=True,
+            return_attention_mask=True,
+            )
+            pred = self.model.predict([encoding['input_ids'],encoding['attention_mask']])
             return pred
         except Exception as e:
             logger.error(e)
-            return [-1]
+            return [[-1]]
 
 
 class profane_detection(Model):
-    def __init__(self, BERT_processor, BERT_transformer, modelWeighPath, thresh) -> None:
-        super().__init__(modelWeighPath)
-        self.threshold = thresh
-        self.BERT_processor = BERT_processor
-        self.BERT_transformer = BERT_transformer
-
+    def __init__(self,TokenizerPath, modelWeighPath,Bert_pretrain_path) -> None:
+        super().__init__(modelWeighPath, TokenizerPath)
+        
+        self.preTrained_ModelPath = Bert_pretrain_path
     # Override Method for create model
     def create_model(self):
-        bert_preprocessor = hub.KerasLayer(self.BERT_processor)
-        bert_encoder = hub.KerasLayer(self.BERT_transformer)
-        text_input = tf.keras.layers.Input(shape=(), dtype=tf.string, name='Inputs')
-        preprocessed_text = bert_preprocessor(text_input)
-        embeed = bert_encoder(preprocessed_text)
-        dropout = tf.keras.layers.Dropout(0.1, name='Dropout')(embeed['pooled_output'])
-        outputs = tf.keras.layers.Dense(1, activation='sigmoid', name='Dense')(dropout)
-        # creating final model
-        model = tf.keras.Model(inputs=[text_input], outputs=[outputs])
+        model = TFBertForSequenceClassification.from_pretrained(self.preTrained_ModelPath)
         return model
 
     def isModerationRequire(self, input: str) -> list:
         try:
-            pred = super().make_prediction(input)
+            pred_score = super().make_prediction(input)
+            pred = np.argmax(pred_score[0], axis=1)
             if pred[0] != -1:
-                pred_score = pred[0][0]
-                if pred_score > self.threshold:
-                    return [pred_score, True]
+                if pred[0] == 1 and pred[1] == 1:
+                    return [1, True]
                 else:
-                    return [pred_score, False]
+                    return [0, False]
             else:
                 return [-1, False]
         except Exception as e:
@@ -82,12 +83,12 @@ class profane_detection(Model):
 
 if __name__ == "__main__":
     # Profane Model Path
-    profane_Model_Path = r"A:\CJ_Personal\Upwork\Text Moderation\Programming\Text-Moderation\profane_model_weight"
+    Bert_Model_Path = "Models/Bert_Model/BertPretrained_Model"
+    Bert_weight_path = r"C:\Users\codej\OneDrive\Documents\CJ_online_work\text-moderation-app\weights\spam model weights\Spam_Model_weight"
+    Tokenizer_path = r"C:\Users\codej\OneDrive\Documents\CJ_online_work\text-moderation-app\Models\model_tokenizer"
     # Profane Model Threshold
     profane_thresh = 0.5
 
     # profane Model Path
-    bert_preprocessor = r"A:\CJ_Personal\Upwork\Text Moderation\Programming\Text-Moderation\models\Bert_model\Preprocessor"
-    bert_transformer = r"A:\CJ_Personal\Upwork\Text Moderation\Programming\Text-Moderation\models\Bert_model\bert_en_uncased_L-12_H-768_A-12_4"
-    profane = profane_detection(bert_preprocessor, bert_transformer, profane_Model_Path, profane_thresh)
-    logger.error(profane.isModerationRequire("Hello world"))
+    profane = profane_detection(Tokenizer_path,Bert_weight_path, Bert_Model_Path)
+    print(profane.isModerationRequire("Hello world"))

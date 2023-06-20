@@ -1,19 +1,14 @@
 # Bert Model Parent Path name
-BERT_MODEL_PARENT = "models/Bert_model"
-BERT_PROCESSOR = "Preprocessor"
-BERT_TRANSFORMER = "bert_en_uncased_L-12_H-768_A-12_4"
+BERT_MODEL_PARENT = "Models/Bert_model/BertPretrained_Model"
 
+# BERT Tokenizer PATH
+BERT_TOKENIZER_PATH = "Models/model_tokenizer"
 # Profane Model Path
 PROFANE_MODEL_WEIGHT_PATH = r"weights/profane_model_weight/profane_model_weight"
 
-# Profane Model Threshold
-PROFANE_THRESHOLD = float(0.5)
 
 # Spam Mode Path
-SPAM_MODEL_WEIGHT_PATH = r"weights/spam_model_weight/spam_weight"
-
-# Spam Model Threshold
-SPAM_THRESHOLD = float(0.5)
+SPAM_MODEL_WEIGHT_PATH = r"weights/spam_model_weights/Spam_Model_weight"
 
 # API Text input Validation
 MINIMUM_LENGTH = 5
