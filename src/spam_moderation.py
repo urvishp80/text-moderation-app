@@ -2,6 +2,7 @@ if __name__ == '__main__':
     from profane_moderation import Model
 else:
     from .profane_moderation import Model
+
 from transformers import TFBertForSequenceClassification
 import numpy as np    
 from loguru import logger
@@ -32,16 +33,3 @@ class spamDetection(Model):
             return [-1, False]
 
 
-
-if __name__ == "__main__":
-    # Spam Model weight Path
-    Bert_Model_Path = "Models/Bert_Model/BertPretrained_Model"
-    Bert_weight_path = r"C:\Users\codej\OneDrive\Documents\CJ_online_work\text-moderation-app\weights\spam model weights\Spam_Model_weight"
-    Tokenizer_path = r"C:\Users\codej\OneDrive\Documents\CJ_online_work\text-moderation-app\Models\model_tokenizer"
-    # Spam Model Threshold
-    Spam_thresh = 0.5
-    # Spam Mode Path
-    bert_preprocessor = r"A:\CJ_Personal\Upwork\Text Moderation\Programming\Text-Moderation\models\Bert_model\Preprocessor"
-    bert_transformer = r"A:\CJ_Personal\Upwork\Text Moderation\Programming\Text-Moderation\models\Bert_model\bert_en_uncased_L-12_H-768_A-12_4"
-    SD = spamDetection(Tokenizer_path,Bert_weight_path, Bert_Model_Path, Spam_thresh)
-    print(SD.isModerationRequire("Hello world"))

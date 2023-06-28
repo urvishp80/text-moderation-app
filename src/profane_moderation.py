@@ -3,15 +3,11 @@ if __name__ == "__main__":
 else:
     from .utils import preprocess_text
 
-from pathlib import Path
+
 from abc import abstractmethod, ABC
-import tensorflow as tf
-import tensorflow_hub as hub
-import tensorflow_text as text
 from transformers import BertTokenizer,TFBertForSequenceClassification
 from loguru import logger
 import numpy as np
-# import tensorflow_text as text
 
 
 class Model(ABC):
@@ -80,15 +76,3 @@ class profane_detection(Model):
             logger.error(e)
             return [-1, False]
 
-
-if __name__ == "__main__":
-    # Profane Model Path
-    Bert_Model_Path = "Models/Bert_Model/BertPretrained_Model"
-    Bert_weight_path = r"C:\Users\codej\OneDrive\Documents\CJ_online_work\text-moderation-app\weights\spam model weights\Spam_Model_weight"
-    Tokenizer_path = r"C:\Users\codej\OneDrive\Documents\CJ_online_work\text-moderation-app\Models\model_tokenizer"
-    # Profane Model Threshold
-    profane_thresh = 0.5
-
-    # profane Model Path
-    profane = profane_detection(Tokenizer_path,Bert_weight_path, Bert_Model_Path)
-    print(profane.isModerationRequire("Hello world"))

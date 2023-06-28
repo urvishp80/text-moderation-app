@@ -7,99 +7,8 @@ import config as cf
 from pathlib import Path
 from loguru import logger
 
-class TextModeration(Resource):
-
-    def __init__(
-            self,
-            BERT_Tokenizer,
-            BERT_preTrainedModel,
-            Profane_modelWeightPath: str,
-            spam_model_weightPath,
-            preloadModel: bool = False
-    ) -> None:
-
-        super().__init__()
-
-        self.PD = profane_detection(BERT_Tokenizer, Profane_modelWeightPath,BERT_preTrainedModel)
-        self.SD = spamDetection(BERT_Tokenizer, spam_model_weightPath, BERT_preTrainedModel)
-
-        if preloadModel:
-            self.PD.load_model()
-            self.SD.load_model()
-
-    def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument("text", type=str, location='args', required=True)
-        text = parser.parse_args()['text']
-
-        if len(text) > cf.MINIMUM_LENGTH:
-
-            logger.info(f"Running Profanity Moderation ... ")
-            profane_score, profane_req = self.PD.isModerationRequire(text)
-
-            logger.info(f"Running Spam Moderation ... ")
-            spam_score, spam_req = self.SD.isModerationRequire(text)
-
-            return {
-                "StatusCode": 200,
-                "Response": {
-                    "Spam_moderation_Require": spam_req,
-                    "Spam_moderation_score": spam_score,
-                    "Profane_moderation_require": profane_req,
-                    "Profane_moderation_score": profane_score
-                }
-            }
-        else:
-            return {
-                "StatusCode": 200,
-                "Response": "Invalid Text (Require minimum Text length 5)"
-            }
-
-    def post(self):
-        post_data = request.get_json()
-        keys = ["userID", "token", "text"]
-        for i in keys:
-            if i not in post_data.keys():
-                return {
-                    "StatusCode": 404,
-                    "Response": "Invalid Parameter"
-                }
-
-        userID = str(post_data["userID"])
-        token = str(post_data["token"])
-        text = str(post_data["text"])
-
-        if userID == cf.USERID and token == cf.TOKEN:
-
-            if len(text) > cf.MINIMUM_LENGTH:
-                logger.info(f"Running Profanity Moderation ... ")
-                profane_score, profane_req = self.PD.isModerationRequire(text)
-
-                logger.info(f"Running Spam Moderation ... ")
-                spam_score, spam_req = self.SD.isModerationRequire(text)
-                return {
-                    "StatusCode": 200,
-                    "Response": {
-                        "Spam_moderation_Require": spam_req,
-                        "Spam_moderation_score": str(spam_score),
-                        "Profane_moderation_require": profane_req,
-                        "Profane_moderation_score": str(profane_score)
-                    }
-                }
-            else:
-                return {
-                    "StatusCode": 200,
-                    "Response": "Invalid Text (Require minimum Text length 5)"
-                }
-        else:
-            return {
-                "StatusCode": 200,
-                "Response": "Invalid credentials details"
-            }
-
 
 class TextModeration_preload(Resource):
-
     def __init__(
             self,
             PD_model,
@@ -188,23 +97,6 @@ class TextModeration_preload(Resource):
 
 
 if __name__ == "__main__":
-    # Model Load EveryTime
-    # parent_path = Path(__file__).parent.absolute()
-    # bert_parent_path = parent_path.joinpath(cf.BERT_MODEL_PARENT)
-    # myapp = Flask("Text Moderation")
-    # api = Api(myapp)
-    # arguments = {
-    #     "BERT_processor": str(bert_parent_path.joinpath(cf.BERT_PROCESSOR)),
-    #     "BERT_transformer": str(bert_parent_path.joinpath(cf.BERT_TRANSFORMER)),
-    #     "Profane_modelWeightPath": cf.PROFANE_MODEL_WEIGHT_PATH,
-    #     "profane_thresh": cf.PROFANE_THRESHOLD,
-    #     "spam_model_weightPath": cf.SPAM_MODEL_WEIGHT_PATH,
-    #     "spam_thresh": cf.SPAM_THRESHOLD
-    # }
-    # api.add_resource(TextModeration, "/index", resource_class_args=arguments.values())
-    # myapp.run()
-
-    # Model Load in main (not load every request)
     parent_path = Path(__file__).parent.absolute()
     arguments = {
         "BERT_Tokenizer":str(parent_path.joinpath(cf.BERT_TOKENIZER_PATH)),

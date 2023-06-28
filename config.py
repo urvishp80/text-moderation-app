@@ -1,10 +1,10 @@
 # Bert Model Parent Path name
-BERT_MODEL_PARENT = "Models/Bert_model/BertPretrained_Model"
+BERT_MODEL_PARENT = "Models/BertPretrained_Model"
 
 # BERT Tokenizer PATH
 BERT_TOKENIZER_PATH = "Models/model_tokenizer"
 # Profane Model Path
-PROFANE_MODEL_WEIGHT_PATH = r"weights/profane_model_weight/profane_model_weight"
+PROFANE_MODEL_WEIGHT_PATH = r"weights/profane_model_weights/profane_model_weight"
 
 
 # Spam Mode Path
